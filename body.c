@@ -7,13 +7,13 @@ int testParam(int C, char **V){
         exit(0);
     }
     if(C==3){
-        if (!strcmp(V[1],"y")){
+        if (!strcmp(V[1],"-y")){
             return 0;
         }
     }
     if(C==2){
         if(!strcmp(V[1],"-h")){
-            printf("help menu!\n");
+            printf("\thelp menu!\n\nuse command '-y':\nprog.exe -y image.bmp\n");
             exit(0);
         }
     }
@@ -61,7 +61,7 @@ FILE *IOpen(char *name){
     FILE *f;
     f = fopen(name, "rb+");
     if (!f){
-        printf("file '%s' not found!\n");
+        printf("file '%s' not found!\n",name);
         exit(2);
     }
     return f;
@@ -89,9 +89,9 @@ void YCCtoRGB(YCbCr **YCC, COLOR **RGB, int height, int width){
     int i,j;
     for(i=0;i<height;i++)
         for (j=0;j<width;j++){
-            RGB[i][j].R=(char)(YCC[i][j].y + 1.402*(YCC[i][j].Cr-128));
-            RGB[i][j].G=(char)(YCC[i][j].y - 0.344*(YCC[i][j].Cb-128) - 0.714*(YCC[i][j].Cr - 128));
-            RGB[i][j].B=(char)(YCC[i][j].y + 1.772*(YCC[i][j].Cb-128));
+            RGB[i][j].R=(YCC[i][j].y + 1.402*(YCC[i][j].Cr-128));
+            RGB[i][j].G=(YCC[i][j].y - 0.344*(YCC[i][j].Cb-128) - 0.714*(YCC[i][j].Cr - 128));
+            RGB[i][j].B=(YCC[i][j].y + 1.772*(YCC[i][j].Cb-128));
         }
     #ifdef debug
     printf("YCC to RGB\n");
@@ -114,8 +114,12 @@ void RGBtoYCC(COLOR **RGB, YCbCr **YCC, int height, int width){
 void chgYP(YCbCr **YCC, int height, int width){
     int i,j;
     for(i=0;i<height;i++)
-        for(j=0;j<width;j++)
-            YCC[i][j].y-=0.001;
+        for(j=0;j<width;j++){
+            YCC[i][j].y/=255;
+            YCC[i][j].y+=0.001;
+            YCC[i][j].y*=255;
+        }
+            
     #ifdef debug
     printf("YCC++ okey\n");
     #endif

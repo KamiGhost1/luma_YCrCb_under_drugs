@@ -35,7 +35,7 @@ typedef struct BMP {
 
 #pragma pack(push,1)
 typedef struct COLOR_pix {
-    char R,G,B;
+    unsigned char R,G,B;
 }COLOR;
 #pragma pack(pop)
 
